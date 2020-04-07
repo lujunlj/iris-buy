@@ -118,6 +118,7 @@ func (p *ProductManager) Update(product *model.Product) (err error) {
 	return nil
 }
 
+//根据商品id查询对应商品
 func (p *ProductManager) SelectByKey(productID int64) (product *model.Product, err error) {
 	//1.准备连接 判断连接是否存在
 	if err = p.Conn(); err != nil {
@@ -126,6 +127,7 @@ func (p *ProductManager) SelectByKey(productID int64) (product *model.Product, e
 	//2.准备sql
 	sql := " select * from " + p.table + " where id =" + strconv.FormatInt(productID, 10)
 	row, errRow := p.mysqlConn.Query(sql)
+	defer row.Close()
 	if errRow != nil {
 		return &model.Product{}, errRow
 	}
@@ -133,5 +135,31 @@ func (p *ProductManager) SelectByKey(productID int64) (product *model.Product, e
 	if len(result) == 0 {
 		return &model.Product{}, nil
 	}
+	common.DataToStructByTagSql(result, product)
+	return
+}
 
+//获取所有商品
+func (p *ProductManager) SelectAll() (products []*model.Product, err error) {
+	//1.判断连接是否存在
+	if err = p.Conn(); err != nil {
+		return
+	}
+	//2.准备sql
+	sql := "Select * from  " + p.table + " where id = " + strconv.FormatInt()
+	row, errRow := p.mysqlConn.Query(sql)
+	defer row.Close()
+	if errRow != nil {
+		return nil, errRow
+	}
+	result := common.GetResultRows(row)
+	if len(result) == 0 {
+		return nil, nil
+	}
+	for _, v := range result {
+		product := &model.Product{}
+		common.DataToStructByTagSql(v, product)
+		products = append(products, product)
+	}
+	return
 }

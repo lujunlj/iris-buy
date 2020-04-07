@@ -2,6 +2,7 @@ package common
 
 import (
 	"errors"
+	"fmt"
 	"reflect"
 	"strconv"
 	"time"
@@ -11,14 +12,18 @@ import (
 func DataToStructByTagSql(data map[string]string, obj interface{}) {
 	objValue := reflect.ValueOf(obj).Elem()
 	for i := 0; i < objValue.NumField(); i++ {
-		//获取sql对应的值
+		//获取sqlmap里对应的值
 		value := data[objValue.Type().Field(i).Tag.Get("sql")]
+		fmt.Printf("获得sqlmap里对应值:%v\n", value)
 		//获取对应字段的名称
 		name := objValue.Type().Field(i).Name
+		fmt.Printf("获得对应字段的名称:%v\n", name)
 		//获取对应字段类型
 		structFieldType := objValue.Field(i).Type()
-		//获取变量类型，也可以直接写"string类型"
+		fmt.Printf("获得对应字段类型:%v\n", structFieldType)
+		//获取map变量类型，也可以直接写"string类型"
 		val := reflect.ValueOf(value)
+		fmt.Printf("获得map变量类型 %v\n", val.Type())
 		var err error
 		if structFieldType != val.Type() {
 			//类型转换
