@@ -2,7 +2,6 @@ package dao
 
 import (
 	"database/sql"
-	"errors"
 	"iris/src/main/buy/common"
 	"iris/src/main/buy/model"
 	"strconv"
@@ -146,7 +145,7 @@ func (p *ProductManager) SelectAll() (products []*model.Product, err error) {
 		return
 	}
 	//2.准备sql
-	sql := "Select * from  " + p.table + " where id = " + strconv.FormatInt()
+	sql := "Select * from  " + p.table
 	row, errRow := p.mysqlConn.Query(sql)
 	defer row.Close()
 	if errRow != nil {
