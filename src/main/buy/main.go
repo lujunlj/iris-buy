@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/kataras/iris"
+	"iris/src/main/buy/common"
 )
 
 func main() {
@@ -19,6 +20,11 @@ func main() {
 		ctx.ViewLayout("")
 		ctx.View("./webapp/views/shared/error.html")
 	})
+	//连接数据库
+	db, err := common.NewMysqlConn()
+	if err != nil {
+		log.Error(err)
+	}
 	//5.注册控制器
 
 	//6.启动服务（设置地址）
